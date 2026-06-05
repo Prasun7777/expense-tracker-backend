@@ -13,6 +13,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+
 @Configuration
 public class SecurityConfig {
 
@@ -28,8 +29,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .cors(cors -> {})
@@ -37,40 +37,44 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/register",
-                                "/users/login","/swagger-ui/**",
-                                "/v3/api-docs/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                                "/users/login",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/error",
+                                "/favicon.ico"
+                        ).permitAll()
+                        .requestMatchers("/expenses/**").authenticated()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(
                         jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173"
+                // add your frontend URL here later if deployed
+                // "https://your-frontend-domain.com"
+        ));
 
-        configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
 
-        configuration.setAllowedHeaders(
-                List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
 
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
-        source.registerCorsConfiguration(
-                "/**",
-                configuration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

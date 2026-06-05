@@ -25,11 +25,18 @@ public class JwtAuthenticationFilter
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
+
+        // ✅ ADD THIS BLOCK (VERY IMPORTANT FOR RAILWAY + CORS)
+        if (request.getMethod().equals("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // existing JWT logic below...
 
         String header =
                 request.getHeader("Authorization");
