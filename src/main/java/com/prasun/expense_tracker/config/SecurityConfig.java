@@ -36,8 +36,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/users/register",
                                 "/users/login",
+                                "/users/register",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/error",
@@ -46,10 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/expenses/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -61,8 +58,6 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173"
-                // add your frontend URL here later if deployed
-                // "https://your-frontend-domain.com"
         ));
 
         configuration.setAllowedMethods(List.of(
