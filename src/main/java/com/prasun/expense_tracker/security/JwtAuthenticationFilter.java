@@ -33,9 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // ✅ SKIP public endpoints
         if (request.getMethod().equals("OPTIONS") ||
+                path.equals("/") ||
                 path.equals("/users/login") ||
                 path.equals("/users/register") ||
+                path.equals("/swagger-ui.html") ||
                 path.startsWith("/swagger-ui") ||
+                path.equals("/v3/api-docs") ||
                 path.startsWith("/v3/api-docs")) {
 
             filterChain.doFilter(request, response);

@@ -6,10 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 
-@CrossOrigin(origins = "https://your-vercel-app.vercel.app")
 @RestController
 @RequestMapping("/expenses")
 @Tag(name = "Expense API",
