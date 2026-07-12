@@ -1,0 +1,40 @@
+services:
+  # 1. Private MySQL Database Service
+  - type: pserv
+    name: expense-db
+    runtime: image
+    image: mysql:8.0
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: expense_tracker
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+
+  # 2. Spring Boot Web Service
+  - type: web
+    name: expense-backend
+    runtime: java
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/expense-tracker-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: MYSQLHOST
+        fromService:
+          type: pserv
+          name: expense-db
+          property: host
+      - key: MYSQLPORT
+        value: "3306"
+      - key: MYSQL_DATABASE
+        value: expense_tracker
+      - key: MYSQLUSER
+        value: root
+      - key: MYSQL_ROOT_PASSWORD
+        fromService:
+          type: pserv
+          name: expense-db
+          property: envVar
+          envVar: MYSQL_ROOT_PASSWORD
